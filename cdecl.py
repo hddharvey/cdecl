@@ -595,7 +595,9 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         print('Enter hard to understand C declarations and see what they mean')
-        print('Will exit on end of file (press Ctrl+D in most terminals)')
+        print('Pressing Ctrl+C should exit this on most terminals!')
+        print('On Windows, use "Windows Terminal" (from the Microsoft Store)')
+        print('    ... the normal command line will mess up the colours')
         sys.exit(0)
 
     if READLINE:
@@ -610,7 +612,8 @@ if __name__ == '__main__':
             print('End of input')
             sys.exit(0)
 
-        if len(line.strip()) == 0:
+        line = line.strip()
+        if len(line) == 0:
             continue # Skip empty lines
         
         try:
