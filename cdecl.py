@@ -3,7 +3,7 @@
 
 import sys
 import signal
-import curses # use this for handling arrow keys :-(
+import readline
 from enum import Enum
 
 PROMPT = "cdecl: "
@@ -581,13 +581,9 @@ class Parser(object):
 ############################################
 # MAIN PROGRAM STUFF
 ############################################
-def prompt():
-    print('\033[34;1m' + PROMPT + '\033[0;0m', end='', flush=True)
-    return sys.stdin.readline()
-
 def sigint_handler(sig, frame):
     print('')
-    sys.exit(0)
+    sys.exit(0) # Override Python's default "KeyboardInterrupt" behaviour
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, sigint_handler)
@@ -597,13 +593,18 @@ if __name__ == '__main__':
         print('Will exit on end of file (press Ctrl+D in most terminals)')
         sys.exit(0)
 
+    readline.set_history_length(1000) # How many old inputs are remembered
+
     while True:
-        line = prompt()
-        if len(line) == 0:
+        try:
+            line = input('\033[34;1m' + PROMPT + '\033[0;0m')
+            readline.add_history(line)
+        except EOFError:
             print('End of input')
             sys.exit(0)
+
         if len(line.strip()) == 0:
-            continue
+            continue # Skip empty lines
         
         try:
             tokens = Lexer(line).parse_tokens(nested=False)
