@@ -3,8 +3,13 @@
 
 import sys
 import signal
-import readline
 from enum import Enum
+
+try:
+    import readline
+    READLINE = True
+except ModuleNotFoundError:
+    READLINE = False
 
 PROMPT = "cdecl: "
 INDENT = "    "
@@ -593,12 +598,14 @@ if __name__ == '__main__':
         print('Will exit on end of file (press Ctrl+D in most terminals)')
         sys.exit(0)
 
-    readline.set_history_length(1000) # How many old inputs are remembered
+    if READLINE:
+        readline.set_history_length(1000) # How many old inputs are remembered
 
     while True:
         try:
             line = input('\033[34;1m' + PROMPT + '\033[0;0m')
-            readline.add_history(line)
+            if READLINE:
+                readline.add_history(line)
         except EOFError:
             print('End of input')
             sys.exit(0)
